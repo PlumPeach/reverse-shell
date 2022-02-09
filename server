@@ -8,7 +8,7 @@ def relaible_send(data):
 	json_data=json.dumps(data).encode('utf-8')
 	target.send(json_datan)
 
-def relaible_recv():
+def relaible_recv():.
 	json_data=""
 	while True:
 		try:
